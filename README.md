@@ -54,7 +54,7 @@ jupyter notebook iris_pupil.ipynb
 - The **performance metrics and graphs** are available in `results/`.
 - Access the **classification report** and detection results:
   - [📄 Classification Report_(YOLOv5)](./Classification_Report.pdf)
-  - [📄 Iris-Pupil Detection Table](./Table(iris_pupil).pdf)
+  - [📄 Iris-Pupil Detection Table](./Table(iris,pupil).pdf)
 
 ## **5. Suggested Approach & Methodology**
 1. **Face & Eye Detection**  
