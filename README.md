@@ -1,99 +1,78 @@
-# Iris & Pupil Detection using YOLOv5 and OpenCV
+# **Iris and Pupil Detection using YOLOv5 and OpenCV**
 
-## Overview  
-This project focuses on detecting the iris and pupil using YOLOv5 and OpenCV. The model is trained on the **irispupille dataset** and uses image enhancement techniques like CLAHE and specular reflection removal for better accuracy.  
+This project focuses on detecting and segmenting the iris and pupil using **YOLOv5** and **OpenCV** with **Haar Cascade classifiers**. It includes real-time eye detection, enhancement (CLAHE), and specular reflection removal.
 
----
+## **1. Project Overview**
+- Detect face and eyes using **Haar Cascade Classifier**.
+- Manually select the eye region.
+- Apply **CLAHE enhancement** and **specular reflection removal**.
+- Detect iris and pupil using a **fine-tuned YOLOv5s model**.
+- Generate bounding boxes for the iris and pupil.
+- Evaluate results using **precision, recall, F1-score, and mAP**.
 
-## Installation & Setup  
+## **2. Repository Structure**
+```
+📂 Project Root
+ ├── 📂 yolov5              # Cloned YOLOv5 repo (contains trained models in runs/)
+ ├── 📂 weights             # Trained YOLOv5s model (best.pt, last.pt)
+ ├── 📂 processed_eyes      # Final output images with bounding boxes
+ ├── 📂 results             # Graphs, performance metrics, and classification reports
+ ├── iris_pupil.ipynb       # Notebook to run eye detection and YOLOv5 inference
+ ├── README.md              # Project documentation
+ ├── Classification_Report.pdf  # YOLOv5 performance metrics
+ ├── Table(iris_pupil).pdf  # Iris-to-pupil ratio detection results
+```
 
-### 1. Clone YOLOv5 Repository  
+## **3. Installation & Setup**
+### **Step 1: Clone the YOLOv5 Repository**
 ```bash
 git clone https://github.com/ultralytics/yolov5.git
 cd yolov5
 pip install -r requirements.txt
 ```
 
-### 2. Download Iris Pupil Dataset  
-Download the dataset from Roboflow:  
-[**Iris Pupil Dataset (irispupille)**](https://universe.roboflow.com/iris-annotation/irispupille)  
+### **Step 2: Download the Dataset**
+Download the **Iris-Pupil dataset** from [Roboflow](https://universe.roboflow.com/iris-annotation/irispupille) and place it inside the `yolov5` folder.
 
-Extract and place the dataset inside the `yolov5` directory.  
-
-### 3. Train YOLOv5s Model  
-Run the following command to train the model:  
+### **Step 3: Train the YOLOv5s Model**
 ```bash
-python train.py --img 640 --batch 16 --epochs 50 --data iris.yaml --weights yolov5s.pt
+python train.py --img 640 --batch 4 --epochs 100 --data irispupille/data.yaml --weights yolov5s.pt --name iris_pupil_detection
 ```
+- The trained model weights (`best.pt`, `last.pt`) will be stored in `runs/train/iris_pupil_detection/`.
 
-After training, the best and last model weights will be saved in:  
+### **Step 4: Run the Detection Script**
 ```bash
-runs/train/exp/weights/best.pt
-runs/train/exp/weights/last.pt
+jupyter notebook iris_pupil.ipynb
 ```
+- Open the notebook and run the cells to:
+  - Detect and select the eyes.
+  - Enhance images using CLAHE.
+  - Detect the **iris and pupil** with YOLOv5.
 
----
+## **4. Results & Evaluation**
+- The **processed images** with bounding boxes are stored in `processed_eyes/`.
+- The **performance metrics and graphs** are available in `results/`.
+- Access the **classification report** and detection results:
+  - [📄 Classification Report (YOLOv5)](./Classification_Report%20(YOLOv5).pdf)
+  - [📄 Iris-Pupil Detection Table](./Table(iris_pupil)-1.pdf)
 
-## Running the Eye Detection Code  
-
-### 1. Run the Jupyter Notebook
-Use the provided `.ipynb` file to execute the detection pipeline. It includes:  
-- Face & Eye detection using **Haar Cascade Classifier**  
-- Opening the webcam and selecting the eye pair manually using keyboard input  
-- Enhancing the selected eye using **CLAHE** and removing specular reflections  
-- Using the **trained YOLOv5 model (best.pt)** for **iris and pupil detection**  
-
----
-
-## Suggested Approach  
-
-### Step 1: Capture  
-- Detect the **face and eyes** using Haar Cascade Classifier.  
-- Draw bounding boxes around the detected regions.  
-
-### Step 2: Extract Eye  
-- Manually select the eye pair using keyboard input.  
-- Crop and extract the **left and right eye regions**.  
-
-### Step 3: Image Enhancement  
-- Apply **CLAHE (Contrast Limited Adaptive Histogram Equalization)** for better visibility.  
-- Remove **specular reflections** to improve feature extraction.  
-
-### Step 4: Iris & Pupil Detection  
-- Load the **trained YOLOv5 model (best.pt)**.  
-- Detect and localize the **iris and pupil** in the enhanced eye images.  
-- Display results with bounding boxes and calculate key ratios.  
-
----
-
-## Methodology  
-
+## **5. Suggested Approach & Methodology**
 1. **Face & Eye Detection**  
-   - Use OpenCV's Haar Cascade Classifier to detect the face and eyes.  
-   - Manually select the eye pair for further processing.  
+   - Used **Haar Cascade Classifier** to detect face and eyes.  
+   - Allowed **manual selection** of the eye pair.
 
-2. **Image Preprocessing**  
-   - Convert the eye images to grayscale.  
-   - Apply **CLAHE** to enhance details.  
-   - Remove **specular reflections** using thresholding techniques.  
+2. **Image Enhancement**  
+   - Applied **CLAHE (Contrast Limited Adaptive Histogram Equalization)**.  
+   - Removed **specular reflections** to enhance clarity.
 
-3. **YOLOv5-based Iris & Pupil Detection**  
-   - Train YOLOv5 on the **irispupille dataset**.  
-   - Use the trained **best.pt** model to detect the **iris and pupil**.  
+3. **YOLOv5 Model for Iris-Pupil Detection**  
+   - Trained **YOLOv5s** on **310 training images, 90 validation images, 45 test images**.  
+   - Achieved **mAP@0.5: 0.98664** and **F1-score: 0.96866**.
 
-4. **Result & Evaluation**  
-   - Display bounding boxes for iris and pupil.  
-   - Compute **iris-to-pupil ratio** for validation.  
+4. **Evaluation Metrics**  
+   - **Precision**: 98.87%  
+   - **Recall**: 94.93%  
+   - **mAP@0.5**: 98.66%  
 
----
-
-## Dependencies  
-Install the required libraries before running the code:  
-```bash
-pip install opencv-python numpy torch torchvision torchaudio matplotlib
-```
-
----
-
-## Conclusion  
-This project provides an efficient pipeline for **real-time iris and pupil detection** using **YOLOv5 and OpenCV** with image enhancement techniques. The trained model offers **accurate eye tracking** and can be further optimized for biometric and medical applications.  
+## **6. Conclusion**
+The project successfully detects the iris and pupil with high accuracy. The trained **YOLOv5s model** generalizes well across various eye conditions. The approach can be extended for **biometric authentication, medical imaging, and gaze tracking applications**.
